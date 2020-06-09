@@ -141,9 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FileWrapper.cpp" />
     <ClCompile Include="quality.cpp" />
+    <ClCompile Include="SecugenWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FileWrapper.h" />
+    <ClInclude Include="SecugenWrapper.h" />
     <ClInclude Include="sgfplib.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
