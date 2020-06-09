@@ -142,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="FileWrapper.cpp" />
-    <ClCompile Include="quality.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="SecugenWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
