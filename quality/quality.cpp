@@ -3,42 +3,72 @@
 #include "sgfplib.h"
 #include <fstream>
 #include <assert.h>
+#include <vector>
 
+class SecugenWrapper {
 
-int GetQualityOfFile(std::string filename) {
-    DWORD rc = 0;
-    HSGFPM hFPM = NULL;
-    rc = SGFPM_Create(&hFPM);
-    if (rc != SGFDX_ERROR_NONE) {
-        std::cout << "ERR: SGFPM_Create returns " << rc << std::endl;
-    }
+public:
+	int GetQualityOfRaw(const char* filename);
+	SecugenWrapper();
 
-    char buffer[120000];
+private:
+	HSGFPM hFPM;
 
-    std::ifstream readFile(filename.c_str(), std::ios::out | std::ios::binary);
+};
 
-    //std::ifstream readFile("finger1_500.pgm", std::ios::out | std::ios::binary);
-    //readFile.seekg(15, std::ios::beg);
+SecugenWrapper::SecugenWrapper() {
+	DWORD rc = 0;
+	rc = SGFPM_Create(&hFPM);
+	if (rc != SGFDX_ERROR_NONE) {
+		std::cout << "ERR: SGFPM_Create returns " << rc << std::endl;
+	}
+	std::cout << "Init" << std::endl;
+}
 
-    if (!readFile.read(buffer, 120000)) {
-        std::cout << "Cannot open file" << std::endl;
-        return 1;
-    }
+std::vector<BYTE> readFile(const char* filename)
+{
+	std::ifstream file(filename, std::ios::binary);
+	if (!file.is_open()) {
+		std::cout << "Cannot open file" << std::endl;
+		return {};
+	}
 
-    BYTE* fingerprintImage = reinterpret_cast<BYTE*>(buffer);
+	// Stop eating new lines in binary mode
+	file.unsetf(std::ios::skipws);
 
-    DWORD img_quality;
-    SGFPM_GetImageQuality(hFPM, 300, 400, fingerprintImage, &img_quality);
+	std::streampos fileSize;
 
-    std::cout << "Quality:" << img_quality << std::endl;
-    return img_quality;
+	file.seekg(0, std::ios::end);
+	fileSize = file.tellg();
+	file.seekg(0, std::ios::beg);
+
+	std::vector<BYTE> vec;
+	vec.reserve(fileSize);
+
+	vec.insert(vec.begin(),
+		std::istream_iterator<BYTE>(file),
+		std::istream_iterator<BYTE>());
+
+	return vec;
+}
+
+int SecugenWrapper::GetQualityOfRaw(const char* filename) {
+
+	std::vector<BYTE> fingerprintImage = readFile(filename);
+
+	DWORD img_quality;
+	SGFPM_GetImageQuality(hFPM, 300, 400, fingerprintImage.data(), &img_quality);
+
+	std::cout << "Quality:" << img_quality << std::endl;
+	return img_quality;
 }
 
 
 int main()
 {
-    assert(GetQualityOfFile("qualityscore19.raw") == 19);
-    assert(GetQualityOfFile("qualityscore59.raw") == 59);
-    assert(GetQualityOfFile("qualityscore99.raw") == 99);
+	SecugenWrapper secugen;
+	assert(secugen.GetQualityOfRaw("qualityscore19.raw") == 19);
+	assert(secugen.GetQualityOfRaw("qualityscore59.raw") == 59);
+	assert(secugen.GetQualityOfRaw("qualityscore99.raw") == 99);
 
 }
