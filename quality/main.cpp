@@ -18,6 +18,7 @@ void write()
 
 int main()
 {
+	// Stage 1: get fingerprint urls into txt file
 	FileWrapper files;
 	SecugenWrapper secugen;
 	assert(secugen.GetQuality(files.readFile("qualityscore19.raw").data()) == 19);
@@ -28,8 +29,9 @@ int main()
 	gsutil.SetBucket("simprints-152315-images-eu");
 	gsutil.SetProject("fUBnpzDdbsCsMp0egCHB");
 	
-	std::string urls = gsutil.ListFingerprintImages();
-	
+	std::string urls = gsutil.ListFingerprintImages();	
 	files.writeFile("fingerprintslist.txt", urls);
+
+	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
 }
