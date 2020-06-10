@@ -3,15 +3,14 @@
 #include <vector>
 #include "SystemWrapper.h"
 
-class GSUtilWrapper
+class GsutilWrapper
 {
 public:
 	void SetBucket(std::string bucketname);
 	void SetProject(std::string projectId);
-	void ListFingerprintImages(std::vector<std::string> output); 
+	std::string ListFingerprintImages();
 	void Download(std::string url);
-	bool hasPermissions();
-	GSUtilWrapper();
+	GsutilWrapper();
 private:
 	std::string _bucketname;
 	std::string _projectId;

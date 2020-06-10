@@ -28,3 +28,11 @@ std::vector<BYTE> FileWrapper::readFile(const char* filename)
 
 	return vec;
 }
+
+void FileWrapper::writeFile(const char* filename, std::string input) {
+	std::cout << "Writing to " << filename << std::endl;
+	std::ofstream out(filename);
+	out << input;
+	out.close();
+}
+

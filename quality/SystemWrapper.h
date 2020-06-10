@@ -3,7 +3,7 @@
 class SystemWrapper
 {
 public:
-	int run(std::string cmd);
+	std::string run(std::string cmd);
 	SystemWrapper();
 };
 

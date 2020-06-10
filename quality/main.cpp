@@ -4,6 +4,18 @@
 #include "FileWrapper.h"
 #include "GSUtilWrapper.h"
 
+#include <fstream>
+#include <string>
+#include <iostream>
+void write()
+{
+	std::string input("hello");
+	std::ofstream out("output.txt");
+	out << input;
+	out.close();
+
+}
+
 int main()
 {
 	FileWrapper files;
@@ -12,11 +24,12 @@ int main()
 	assert(secugen.GetQuality(files.readFile("qualityscore59.raw").data()) == 59);
 	assert(secugen.GetQuality(files.readFile("qualityscore99.raw").data()) == 99);
 
-	GSUtilWrapper gsutil;
+	GsutilWrapper gsutil;
 	gsutil.SetBucket("simprints-152315-images-eu");
 	gsutil.SetProject("fUBnpzDdbsCsMp0egCHB");
-	gsutil.ListFingerprintImages({});
-	//system("gsutil");
-	//system("gsutil >0 cp \"gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/78ee802e-a352-49e6-bc10-1e221054250a/fingerprints/6797b090-c4a5-4480-b407-7515d71ece19.wsq\" .");
-	//system("gsutil cp \"gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/78ee802e-a352-49e6-bc10-1e221054250a/fingerprints/6797b090-c4a5-4480-b407-7515d71ece19.wsq\" . >0");
+	
+	std::string urls = gsutil.ListFingerprintImages();
+	
+	files.writeFile("fingerprintslist.txt", urls);
+
 }
