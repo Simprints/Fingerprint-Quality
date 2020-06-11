@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="FileWrapper.cpp" />
     <ClCompile Include="GSUtilWrapper.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="SecugenWrapper.cpp" />
     <ClCompile Include="SystemWrapper.cpp" />
@@ -151,6 +152,7 @@
   <ItemGroup>
     <ClInclude Include="FileWrapper.h" />
     <ClInclude Include="GSUtilWrapper.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="SecugenWrapper.h" />
     <ClInclude Include="sgfplib.h" />
     <ClInclude Include="SystemWrapper.h" />

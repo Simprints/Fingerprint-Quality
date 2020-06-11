@@ -3,13 +3,7 @@
 #include "SecugenWrapper.h"
 #include "FileWrapper.h"
 #include "GSUtilWrapper.h"
-extern "C" {
-#include "lib/wsq/include/wsq.h"
-}
-
-#define cimg_display 0
-#include "lib/CImg/CImg.h"
-using namespace cimg_library;
+#include "Image.h"
 
 void Test_SecugenFingerprintQuality() {
 	FileWrapper files;
@@ -33,8 +27,13 @@ void Stage1_CollectFingerprintLists() {
 
 int main()
 {
-	Test_SecugenFingerprintQuality();
+	//Test_SecugenFingerprintQuality();
 	//Stage1_CollectFingerprintLists();
+	FileWrapper files;
+	Image image;
+	unsigned char** output = nullptr;
+	image.DecodeWsq(files.readFile("images/500dpi.wsq").data(), output);
+
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
