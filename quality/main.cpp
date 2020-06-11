@@ -7,6 +7,10 @@ extern "C" {
 #include "lib/wsq/include/wsq.h"
 }
 
+#define cimg_display 0
+#include "lib/CImg/CImg.h"
+using namespace cimg_library;
+
 void Test_SecugenFingerprintQuality() {
 	FileWrapper files;
 	SecugenWrapper secugen;
@@ -29,7 +33,8 @@ void Stage1_CollectFingerprintLists() {
 
 int main()
 {
-	Stage1_CollectFingerprintLists();
+	Test_SecugenFingerprintQuality();
+	//Stage1_CollectFingerprintLists();
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
-#include "sgfplib.h"
+//#include "sgfplib.h"
+#include "lib/sgfplib/sgfplib.h"
 class SecugenWrapper {
 
 public:
