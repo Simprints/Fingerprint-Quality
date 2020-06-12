@@ -4,6 +4,7 @@
 #include "FileWrapper.h"
 #include "GSUtilWrapper.h"
 #include "Image.h"
+#include "SystemWrapper.h"
 
 void Test_SecugenFingerprintQuality() {
 	FileWrapper files;
@@ -25,14 +26,20 @@ void Stage1_CollectFingerprintLists() {
 	files.writeFile("fingerprintslist.txt", urls);
 }
 
+
 int main()
 {
 	//Test_SecugenFingerprintQuality();
 	//Stage1_CollectFingerprintLists();
+
+	//stage 2:
 	FileWrapper files;
 	Image image;
 	unsigned char** output = nullptr;
-	image.DecodeWsq(files.readFile("images/500dpi.wsq").data(), output);
+	image.DecodeWsqFile("a", "b");
+	//SystemWrapper system;
+	//std::cout << system.run("C:\\dev\\Fingerprint-Quality\\quality\\lib\\wsq\\dwsq.exe");
+	//image.DecodeWsq(files.readFile("images/500dpi.wsq"), output);
 
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 

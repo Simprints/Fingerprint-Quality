@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
+#include <string>
 class Image
 {
 public:
-	void DecodeWsq(const unsigned char* input, unsigned char** output);
+	void DecodeWsq(std::vector<unsigned char> input, unsigned char** output);
+	void DecodeWsqFile(std::string input, std::string output);
 	//void Downsize(const std::vector<BYTE>& input, std::vector<BYTE>& output);
 };
 
