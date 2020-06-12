@@ -9,7 +9,8 @@ public:
 	void SetBucket(std::string bucketname);
 	void SetProject(std::string projectId);
 	std::string ListFingerprintImages();
-	void Download(std::string url);
+	void Download(std::string url, std::string destination);
+	bool getFilenameFromUrl(std::string url, std::string* filename);
 	GsutilWrapper();
 private:
 	std::string _bucketname;

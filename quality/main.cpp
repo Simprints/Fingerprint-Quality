@@ -6,7 +6,9 @@
 #include "Image.h"
 #include "SystemWrapper.h"
 #include <fstream>
+#include <string>
 
+const std::string downloadFolder("images");
 
 void Test_SecugenFingerprintQuality() {
 	FileWrapper files;
@@ -57,6 +59,17 @@ void Test_ReadLists()
 	}
 }
 
+void Test_Download() 
+{
+	GsutilWrapper gsutil;
+	std::string url("gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/004e8db6-b294-487b-8334-6c8def57e54c/fingerprints/22804a1d-0da0-4604-92b6-1042c455b8d2.wsq");
+	std::string filename;
+	gsutil.getFilenameFromUrl(url, &filename);
+	std::string destination = downloadFolder + "/" + filename;
+
+	gsutil.Download(url, destination);
+}
+
 int main()
 {
 
@@ -64,7 +77,8 @@ int main()
 	//Stage1_CollectFingerprintLists();
 	//Test_WsqImageQuality();
 	//Test_ReadLists();
-
+	Test_Download();
+	
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
 }

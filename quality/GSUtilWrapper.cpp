@@ -2,6 +2,8 @@
 #include <iostream>
 #include "SystemWrapper.h"
 
+
+
 void GsutilWrapper::SetBucket(std::string bucketname)
 {
 	_bucketname = bucketname;
@@ -19,18 +21,20 @@ std::string GsutilWrapper::ListFingerprintImages()
 	return _system.run("gsutil ls -r gs://" + _bucketname + "/projects/" + _projectId + "/**.wsq");
 }
 
-void GsutilWrapper::Download(std::string url)
+void GsutilWrapper::Download(std::string url, std::string destination)
 {
-	//gsutil cp \"gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/78ee802e-a352-49e6-bc10-1e221054250a/fingerprints/6797b090-c4a5-4480-b407-7515d71ece19.wsq\" .
+	//gsutil cp "gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/78ee802e-a352-49e6-bc10-1e221054250a/fingerprints/6797b090-c4a5-4480-b407-7515d71ece19.wsq" .
+	_system.run("gsutil cp " + url + " " + destination);
+}
+
+bool GsutilWrapper::getFilenameFromUrl(std::string url, std::string* filename) {
+	std::size_t found = url.find_last_of("/\\");	
+	*filename = url.substr(found + 1);
+
+	return (filename->find(".wsq") != std::string::npos);
 }
 
 GsutilWrapper::GsutilWrapper()
 {
 	//gsutil
-	std::cout << "Starting gsutil..." << std::endl;
-	_system.run("gsutil");
-
 }
-
-//system("gsutil");
-	//system("gsutil cp \"gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/78ee802e-a352-49e6-bc10-1e221054250a/fingerprints/6797b090-c4a5-4480-b407-7515d71ece19.wsq\" .");
