@@ -9,6 +9,8 @@
 #include <string>
 
 const std::string downloadFolder("images");
+const std::string fingerprintsUrlsFilename("fingerprintslist.txt");
+const std::string fingerprintQualitiesFilename("fingerprintQualities.csv");
 
 void Test_SecugenFingerprintQuality() {
 	FileWrapper files;
@@ -27,7 +29,7 @@ void Stage1_CollectFingerprintLists() {
 	gsutil.SetProject("fUBnpzDdbsCsMp0egCHB");
 
 	std::string urls = gsutil.ListFingerprintImages();
-	files.writeFile("fingerprintslist.txt", urls);
+	files.writeFile(fingerprintsUrlsFilename.c_str(), urls);
 }
 
 void Test_WsqImageQuality() {
@@ -123,9 +125,38 @@ int main()
 	//Test_ReadLists();
 	//Test_Download();
 	//Test_DownloadAndGetQuality();
-	Test_WriteCsv();
-	
+	//Test_WriteCsv();
 
-	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
+	FileWrapper files;
+	Image image;
+	GsutilWrapper gsutil;
+	SecugenWrapper secugen;
+	std::vector<std::pair<std::string, unsigned int>> urlsAndQualities;
+	std::vector<std::string> fingerprintsUrls;
+	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return 1;
+	}
+
+	for (std::string& url : fingerprintsUrls) 
+	{
+		std::string wsqFilename;
+		gsutil.getFilenameFromUrl(url, &wsqFilename);
+		std::string wsqDestination = downloadFolder + "/" + wsqFilename;
+		gsutil.Download(url, wsqDestination);
+
+		std::string rawFilename;
+		image.DecodeWsqFile(wsqDestination, &rawFilename);
+		std::cout << "output: " << rawFilename << std::endl;
+		std::vector<unsigned char> downsizedImage;
+		image.Downsize(files.getBinary(rawFilename.c_str()), downsizedImage);
+
+		unsigned int quality = secugen.GetQuality(downsizedImage.data());
+		urlsAndQualities.push_back(std::make_pair(url, quality));
+
+		files.writePairsFile(fingerprintQualitiesFilename.c_str(), urlsAndQualities);
+	}
+	return 0;
 
 }

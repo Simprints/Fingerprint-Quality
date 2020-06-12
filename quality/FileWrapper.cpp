@@ -38,7 +38,7 @@ void FileWrapper::writeFile(const char* filename, std::string input) {
 
 void FileWrapper::writePairsFile(const char* filename, std::vector<std::pair<std::string, unsigned int>> input) {
 	std::cout << "Writing to " << filename << std::endl;
-	std::ofstream fout(filename);
+	std::ofstream fout(filename, std::ios_base::app);
 	for (auto const& x : input) {
 		fout << x.first << "," << x.second << '\n';
 	}
