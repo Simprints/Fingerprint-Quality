@@ -35,8 +35,9 @@ int main()
 	//stage 2:
 	FileWrapper files;
 	Image image;
-	unsigned char** output = nullptr;
-	image.DecodeWsqFile("a", "b");
+	std::string outfile;
+	image.DecodeWsqFile("images/500dpi.wsq", &outfile);
+	std::cout << "output: " << outfile << std::endl;
 	//SystemWrapper system;
 	//std::cout << system.run("C:\\dev\\Fingerprint-Quality\\quality\\lib\\wsq\\dwsq.exe");
 	//image.DecodeWsq(files.readFile("images/500dpi.wsq"), output);

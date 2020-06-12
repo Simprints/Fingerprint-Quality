@@ -16,10 +16,11 @@ void Image::DecodeWsq(std::vector<unsigned char> input, unsigned char** output)
 
 }
 
-void Image::DecodeWsqFile(std::string input, std::string output)
+void Image::DecodeWsqFile(std::string filename, std::string* filename_out)
 {
 	SystemWrapper system;
-	std::cout << system.run(DWSQ);
+	std::cout << system.run(DWSQ + " raw " + filename + " -raw_out");
+	*filename_out = filename.substr(0, filename.size() - 3) + "raw";
 
 }
 
