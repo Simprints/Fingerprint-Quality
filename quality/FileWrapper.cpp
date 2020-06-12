@@ -36,6 +36,16 @@ void FileWrapper::writeFile(const char* filename, std::string input) {
 	out.close();
 }
 
+void FileWrapper::writePairsFile(const char* filename, std::vector<std::pair<std::string, unsigned int>> input) {
+	std::cout << "Writing to " << filename << std::endl;
+	std::ofstream fout(filename);
+	for (auto const& x : input) {
+		fout << x.first << "," << x.second << '\n';
+	}
+	fout.close();
+}
+
+
 bool FileWrapper::getLines(std::string fileName, std::vector<std::string>& vecOfStrs)
 {
 

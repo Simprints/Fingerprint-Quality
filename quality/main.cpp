@@ -104,6 +104,16 @@ int Test_DownloadAndGetQuality() {
 	return 0;
 }
 
+void Test_WriteCsv() 
+{
+	std::vector<std::pair<std::string, unsigned int>> imagesAndQualities;
+
+	imagesAndQualities.push_back(std::make_pair("first", 10));
+	imagesAndQualities.push_back(std::make_pair("second", 20));
+	FileWrapper files;
+	files.writePairsFile("pairs.csv", imagesAndQualities);
+}
+
 int main()
 {
 
@@ -113,6 +123,7 @@ int main()
 	//Test_ReadLists();
 	//Test_Download();
 	//Test_DownloadAndGetQuality();
+	Test_WriteCsv();
 	
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
