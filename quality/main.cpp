@@ -131,13 +131,14 @@ int main()
 	Image image;
 	GsutilWrapper gsutil;
 	SecugenWrapper secugen;
-	std::vector<std::pair<std::string, unsigned int>> urlsAndQualities;
 	std::vector<std::string> fingerprintsUrls;
 	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
 	if (!result) {
 		std::cout << "Error: couldnt read lines" << std::endl;
 		return 1;
 	}
+
+	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
 
 	for (std::string& url : fingerprintsUrls) 
 	{
@@ -153,9 +154,8 @@ int main()
 		image.Downsize(files.getBinary(rawFilename.c_str()), downsizedImage);
 
 		unsigned int quality = secugen.GetQuality(downsizedImage.data());
-		urlsAndQualities.push_back(std::make_pair(url, quality));
 
-		files.writePairsFile(fingerprintQualitiesFilename.c_str(), urlsAndQualities);
+		files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
 	}
 	return 0;
 

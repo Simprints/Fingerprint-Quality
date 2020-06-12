@@ -31,7 +31,7 @@ void Image::Downsize(const std::vector<unsigned char> input, std::vector<unsigne
 {
 	unsigned int width = CalculateWidth(input.size());
 	unsigned int height = CalculateHeight(width);
-	std::cout << "width=" << width << " height=" << height << std::endl;
+	//std::cout << "width=" << width << " height=" << height << std::endl;
     CImg<uint8_t> image(input.data(), width, height);
 
     CImg<uint8_t> downsizedImage = image.get_resize(300, 400);

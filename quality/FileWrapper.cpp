@@ -38,10 +38,20 @@ void FileWrapper::writeFile(const char* filename, std::string input) {
 
 void FileWrapper::writePairsFile(const char* filename, std::vector<std::pair<std::string, unsigned int>> input) {
 	std::cout << "Writing to " << filename << std::endl;
-	std::ofstream fout(filename, std::ios_base::app);
+	std::ofstream fout(filename);
 	for (auto const& x : input) {
 		fout << x.first << "," << x.second << '\n';
 	}
+	fout.close();
+}
+
+void FileWrapper::appendToFile(const char* filename, std::pair<std::string, unsigned int> input) {
+	//std::cout << "Appending to " << filename << std::endl;
+	std::ofstream fout(filename, std::ios_base::app);
+	if (!fout.is_open()) {
+		std::cout << "Error: Cannot open file" << std::endl;
+	}
+	fout << input.first << "," << input.second << '\n';	
 	fout.close();
 }
 
