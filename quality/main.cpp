@@ -127,6 +127,15 @@ int main()
 	//Test_DownloadAndGetQuality();
 	//Test_WriteCsv();
 
+	//TODO
+	//add final check that number of files are same
+	//	have a counter
+	//	remove printf from download
+	//	delete fingerprints
+	//	download all files at once rather than one by one
+	//	approx 27s per kb
+
+
 	FileWrapper files;
 	Image image;
 	GsutilWrapper gsutil;
