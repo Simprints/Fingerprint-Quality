@@ -70,6 +70,7 @@ void Test_Download()
 	gsutil.Download(url, destination);
 }
 
+
 int main()
 {
 
@@ -77,8 +78,44 @@ int main()
 	//Stage1_CollectFingerprintLists();
 	//Test_WsqImageQuality();
 	//Test_ReadLists();
-	Test_Download();
-	
+	//Test_Download();
+
+	FileWrapper files;
+	Image image;
+	GsutilWrapper gsutil;
+	SecugenWrapper secugen;
+
+	std::vector<std::string> vecOfStr;
+	bool result = files.getLines("fingerprintslist.txt", vecOfStr);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return 1;
+	}
+
+	for (std::string& line : vecOfStr) {
+
+		// Get the contents of file in a vector
+		
+
+
+		std::string url(line);
+		std::string filename;
+		gsutil.getFilenameFromUrl(url, &filename);
+		std::string destination = downloadFolder + "/" + filename;
+		gsutil.Download(url, destination);
+
+
+		std::string outfile;
+		image.DecodeWsqFile(destination, &outfile);
+		std::cout << "output: " << outfile << std::endl;
+		std::vector<unsigned char> downsizedImage;
+		image.Downsize(files.getBinary(outfile.c_str()), downsizedImage);
+
+
+		secugen.GetQuality(downsizedImage.data());
+
+	}
+
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
 }
