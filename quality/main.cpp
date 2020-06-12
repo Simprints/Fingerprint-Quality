@@ -70,16 +70,7 @@ void Test_Download()
 	gsutil.Download(url, destination);
 }
 
-
-int main()
-{
-
-	//Test_SecugenFingerprintQuality();
-	//Stage1_CollectFingerprintLists();
-	//Test_WsqImageQuality();
-	//Test_ReadLists();
-	//Test_Download();
-
+int Test_DownloadAndGetQuality() {
 	FileWrapper files;
 	Image image;
 	GsutilWrapper gsutil;
@@ -94,10 +85,6 @@ int main()
 
 	for (std::string& line : vecOfStr) {
 
-		// Get the contents of file in a vector
-		
-
-
 		std::string url(line);
 		std::string filename;
 		gsutil.getFilenameFromUrl(url, &filename);
@@ -111,10 +98,22 @@ int main()
 		std::vector<unsigned char> downsizedImage;
 		image.Downsize(files.getBinary(outfile.c_str()), downsizedImage);
 
-
 		secugen.GetQuality(downsizedImage.data());
 
 	}
+	return 0;
+}
+
+int main()
+{
+
+	//Test_SecugenFingerprintQuality();
+	//Stage1_CollectFingerprintLists();
+	//Test_WsqImageQuality();
+	//Test_ReadLists();
+	//Test_Download();
+	//Test_DownloadAndGetQuality();
+	
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
