@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 
-std::vector<BYTE> FileWrapper::readFile(const char* filename)
+std::vector<unsigned char> FileWrapper::readFile(const char* filename)
 {
 	std::ifstream file(filename, std::ios::binary);
 	if (!file.is_open()) {
@@ -19,12 +19,12 @@ std::vector<BYTE> FileWrapper::readFile(const char* filename)
 	fileSize = file.tellg();
 	file.seekg(0, std::ios::beg);
 
-	std::vector<BYTE> vec;
+	std::vector<unsigned char> vec;
 	vec.reserve(fileSize);
 
 	vec.insert(vec.begin(),
-		std::istream_iterator<BYTE>(file),
-		std::istream_iterator<BYTE>());
+		std::istream_iterator<unsigned char>(file),
+		std::istream_iterator<unsigned char>());
 
 	return vec;
 }

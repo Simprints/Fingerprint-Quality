@@ -6,7 +6,7 @@
 class FileWrapper
 {
 public:
-	std::vector<BYTE> readFile(const char* filename);
+	std::vector<unsigned char> readFile(const char* filename);
 	void writeFile(const char* filename, std::string input);
 };
 

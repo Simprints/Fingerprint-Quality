@@ -36,12 +36,13 @@ int main()
 	FileWrapper files;
 	Image image;
 	std::string outfile;
-	image.DecodeWsqFile("images/500dpi.wsq", &outfile);
+	image.DecodeWsqFile("images/1700dpi.wsq", &outfile);
 	std::cout << "output: " << outfile << std::endl;
-	//SystemWrapper system;
-	//std::cout << system.run("C:\\dev\\Fingerprint-Quality\\quality\\lib\\wsq\\dwsq.exe");
-	//image.DecodeWsq(files.readFile("images/500dpi.wsq"), output);
+	std::vector<unsigned char> downsizedImage;
+	image.Downsize(files.readFile(outfile.c_str()), downsizedImage);
 
+	SecugenWrapper secugen;
+	secugen.GetQuality(downsizedImage.data());
 
 	// Stage 2: read txt file line by line and download fingerprint, get quality, save to csv file {url, quality} 
 
