@@ -150,8 +150,10 @@
     <ClCompile Include="NameUtilities.cpp" />
     <ClCompile Include="SecugenWrapper.cpp" />
     <ClCompile Include="SystemWrapper.cpp" />
+    <ClCompile Include="Tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="constants.h" />
     <ClInclude Include="FileWrapper.h" />
     <ClInclude Include="GSUtilWrapper.h" />
     <ClInclude Include="Image.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="SecugenWrapper.h" />
     <ClInclude Include="sgfplib.h" />
     <ClInclude Include="SystemWrapper.h" />
+    <ClInclude Include="Tests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
