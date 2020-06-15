@@ -33,13 +33,6 @@ void GsutilWrapper::DownloadAllWsq(std::string destination)
 	_system.run("gsutil -m cp gs://" + _bucketname + "/projects/" + _projectId + "/**.wsq " + destination);
 }
 
-bool GsutilWrapper::getFilenameFromUrl(std::string url, std::string* filename) {
-	std::size_t found = url.find_last_of("/\\");	
-	*filename = url.substr(found + 1);
-
-	return (filename->find(".wsq") != std::string::npos);
-}
-
 GsutilWrapper::GsutilWrapper()
 {
 	//gsutil

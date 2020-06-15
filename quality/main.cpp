@@ -7,6 +7,9 @@
 #include "SystemWrapper.h"
 #include <fstream>
 #include <string>
+#include "NameUtilities.h"
+#include <thread>
+#include <mutex>
 
 const std::string downloadFolder("images");
 const std::string fingerprintsUrlsFilename("fingerprintslist.txt");
@@ -68,7 +71,8 @@ void Test_Download()
 	GsutilWrapper gsutil;
 	std::string url("gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/004e8db6-b294-487b-8334-6c8def57e54c/fingerprints/22804a1d-0da0-4604-92b6-1042c455b8d2.wsq");
 	std::string filename;
-	gsutil.getFilenameFromUrl(url, &filename);
+	NameUtilities name;
+	name.getFilenameFromUrl(url, &filename);
 	std::string destination = downloadFolder + "/" + filename;
 
 	gsutil.Download(url, destination);
@@ -79,7 +83,8 @@ int Test_DownloadAndGetQuality() {
 	Image image;
 	GsutilWrapper gsutil;
 	SecugenWrapper secugen;
-
+	NameUtilities name;
+	
 	std::vector<std::string> vecOfStr;
 	bool result = files.getLines("fingerprintslist.txt", vecOfStr);
 	if (!result) {
@@ -91,7 +96,7 @@ int Test_DownloadAndGetQuality() {
 
 		std::string url(line);
 		std::string filename;
-		gsutil.getFilenameFromUrl(url, &filename);
+		name.getFilenameFromUrl(url, &filename);
 		std::string destination = downloadFolder + "/" + filename;
 		gsutil.Download(url, destination);
 
@@ -118,17 +123,80 @@ void Test_WriteCsv()
 	files.writePairsFile("pairs.csv", imagesAndQualities);
 }
 
+std::vector<std::string> fingerprintsUrls;
+
+std::mutex ReadLock;
+std::mutex WriteLock;
+
+SecugenWrapper secugen; //TODO does this need to be initialised?
+
+std::string FetchImageUrl(int id) {
+	std::lock_guard<std::mutex> lock(ReadLock);
+	NameUtilities name;	
+	std::string url;
+	if (fingerprintsUrls.empty()) {
+		url = "";
+	}
+	else {
+		url = fingerprintsUrls.back();
+		fingerprintsUrls.pop_back();
+		std::string filename;
+		name.getFilenameFromUrl(url, &filename);
+		std::cout << id << " is fetching " << filename << std::endl;
+	}
+	return url;
+}
+
+unsigned int ProcessImage(std::string url) {
+	NameUtilities name;
+	std::string filename;
+	name.getFilenameFromUrl(url, &filename);
+	//std::cout << "Processing: " << filename << std::endl;
+
+	Image image;
+	FileWrapper files;
+	std::string wsqfilename;
+	name.getFilenameFromUrl(url, &wsqfilename);
+	std::string wsqdestination = downloadFolder + "/" + wsqfilename;
+
+	std::string rawfilename;
+	image.DecodeWsqFile(wsqdestination, &rawfilename);
+	//std::cout << "output: " << rawfilename << std::endl;
+	std::vector<unsigned char> downsizedimage;
+	image.Downsize(files.getBinary(rawfilename.c_str()), downsizedimage);
+
+	unsigned int quality = secugen.GetQuality(downsizedimage.data());
+
+	return quality;
+}
+
+void UploadResults(std::string url, unsigned int quality) {
+	std::lock_guard<std::mutex> lock(WriteLock);
+	NameUtilities name;
+	std::string filename;
+	name.getFilenameFromUrl(url, &filename);
+	std::cout << "Uploading: " << filename << " as " << quality << std::endl;
+	FileWrapper files;
+	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
+}
+
+void ExecuteThread(int id) {
+	for (;;) {
+		std::string url = FetchImageUrl(id);
+		if (url.empty()) {
+			break;
+		}
+
+		unsigned int quality = ProcessImage(url);
+
+		UploadResults(url, quality);
+	}
+}
+
+const unsigned int NUM_THREADS = 5;
+
 int main()
 {
-
-	//Test_SecugenFingerprintQuality();
-	//Stage1_CollectFingerprintLists();
-	//Test_WsqImageQuality();
-	//Test_ReadLists();
-	//Test_Download();
-	//Test_DownloadAndGetQuality();
-	//Test_WriteCsv();
-
 	//TODO
 	//add final check that number of files are same
 	//	have a counter
@@ -140,38 +208,50 @@ int main()
 	//Stage 1: Download all WSQ images
 	//Stage1_CollectFingerprintImages();
 
-	//Stage 2: Run through quality SDK
+	//Stage 2: Run it through quality SDK via parallel processing
 
-	/*FileWrapper files;
-	Image image;
-	GsutilWrapper gsutil;
-	SecugenWrapper secugen;
-	std::vector<std::string> fingerprintsUrls;
+	
+	//Init Urls Data store
+	FileWrapper files;
 	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
 	if (!result) {
 		std::cout << "Error: couldnt read lines" << std::endl;
 		return 1;
 	}
-
 	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
+	
+	std::thread threads[NUM_THREADS];
+	for (int i = 0; i < NUM_THREADS; i++) {
+		threads[i] = std::thread(ExecuteThread, i);
+	}
 
-	for (std::string& url : fingerprintsUrls) 
-	{
-		std::string wsqFilename;
-		gsutil.getFilenameFromUrl(url, &wsqFilename);
-		std::string wsqDestination = downloadFolder + "/" + wsqFilename;
-		gsutil.Download(url, wsqDestination);
+	for (int i = 0; i < NUM_THREADS; i++) {
+		threads[i].join();
+	}
 
-		std::string rawFilename;
-		image.DecodeWsqFile(wsqDestination, &rawFilename);
-		std::cout << "output: " << rawFilename << std::endl;
-		std::vector<unsigned char> downsizedImage;
-		image.Downsize(files.getBinary(rawFilename.c_str()), downsizedImage);
 
-		unsigned int quality = secugen.GetQuality(downsizedImage.data());
+	//Image image;
+	//NameUtilities name;
+	//SecugenWrapper secugen;
 
-		files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
-	}*/
+
+	//for (std::string& url : fingerprintsUrls) 
+	//{
+	//	std::string wsqFilename;
+	//	assert(name.getFilenameFromUrl(url, &wsqFilename));
+	//	std::string wsqDestination = downloadFolder + "/" + wsqFilename;
+
+	//	std::string rawFilename;
+	//	image.DecodeWsqFile(wsqDestination, &rawFilename);
+	//	std::cout << "output: " << rawFilename << std::endl;
+	//	std::vector<unsigned char> downsizedImage;
+	//	image.Downsize(files.getBinary(rawFilename.c_str()), downsizedImage);
+
+	//	unsigned int quality = secugen.GetQuality(downsizedImage.data());
+
+	//	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
+	//}
+
 	return 0;
 
 }

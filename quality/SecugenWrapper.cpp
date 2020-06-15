@@ -17,6 +17,6 @@ int SecugenWrapper::GetQuality(BYTE* fingerprintImage) {
 	DWORD img_quality;
 	SGFPM_GetImageQuality(hFPM, 300, 400, fingerprintImage, &img_quality);
 
-	std::cout << "Quality:" << img_quality << std::endl;
+	//std::cout << "Quality:" << img_quality << std::endl;
 	return img_quality;
 }

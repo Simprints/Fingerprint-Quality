@@ -11,7 +11,6 @@ public:
 	std::string ListFingerprintImages();
 	void Download(std::string url, std::string destination);
 	void DownloadAllWsq(std::string destination);
-	bool getFilenameFromUrl(std::string url, std::string* filename);
 	GsutilWrapper();
 private:
 	std::string _bucketname;
