@@ -77,7 +77,7 @@ int main()
 {
 	int startTime = clock();
 	//Stage 1: Download all WSQ images
-	//Stage1_CollectFingerprintImages();
+	Stage1_CollectFingerprintImages();
 
 	FileWrapper files;
 	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
