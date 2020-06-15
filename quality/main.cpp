@@ -30,7 +30,7 @@ void Stage1_CollectFingerprintImages() {
 }
 
 void ExecuteThread() {
-	ImageAndQualitiesProcessor proc(fingerprintsUrls, numberOfFingerprints, count);
+	ImageAndQualitiesProcessor proc(fingerprintsUrls, numberOfFingerprints);
 	for (;;) {
 		std::string url = proc.FetchImageUrl();
 		if (url.empty()) {

@@ -4,6 +4,7 @@
 #include "FileWrapper.h"
 #include "SecugenWrapper.h"
 #include <mutex>
+#include <atomic>
 
 class ImageAndQualitiesProcessor
 {
@@ -16,14 +17,12 @@ private:
 	static std::mutex WriteLock;
 	std::vector<std::string>& _fingerprintsUrls;
 	unsigned int _numberOfFingerprints;
+	static std::atomic<unsigned int> counter;
 
 public:
 	std::string FetchImageUrl();
 	unsigned int ProcessImage(std::string url);
 	void UploadResults(std::string url, unsigned int quality);
-	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints, volatile unsigned int& count);
-
-protected:
-	volatile unsigned int& _count;
+	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints);
 };
 
