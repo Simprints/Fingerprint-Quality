@@ -13,7 +13,7 @@
 #include "constants.h"
 #include <time.h>
 
-const unsigned int NUM_THREADS = 5;
+
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
 std::mutex ReadLock;
