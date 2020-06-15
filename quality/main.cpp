@@ -47,7 +47,6 @@ std::string FetchImageUrl(int id) {
 		fingerprintsUrls.pop_back();
 		std::string filename;
 		name.getFilenameFromUrl(url, &filename);
-		//std::cout << id << " is fetching " << filename << std::endl;
 
 		count++;
 		std::cout << count << "/" << numberOfFingerprints << std::endl;
@@ -57,10 +56,6 @@ std::string FetchImageUrl(int id) {
 
 unsigned int ProcessImage(std::string url) {
 	NameUtilities name;
-	std::string filename;
-	name.getFilenameFromUrl(url, &filename);
-	//std::cout << "Processing: " << filename << std::endl;
-
 	Image image;
 	FileWrapper files;
 	std::string wsqfilename;
@@ -69,7 +64,6 @@ unsigned int ProcessImage(std::string url) {
 
 	std::string rawfilename;
 	image.DecodeWsqFile(wsqdestination, &rawfilename);
-	//std::cout << "output: " << rawfilename << std::endl;
 	std::vector<unsigned char> downsizedimage;
 	image.Downsize(files.getBinary(rawfilename.c_str()), downsizedimage);
 
@@ -103,16 +97,8 @@ void ExecuteThread(int id) {
 
 
 void Stage2_RunQuality() {
-	FileWrapper files;
-	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
-	if (!result) {
-		std::cout << "Error: couldnt read lines" << std::endl;
-		return;
-	}
-	numberOfFingerprints = fingerprintsUrls.size();
-	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
-
 	std::thread threads[NUM_THREADS];
+	std::cout << "Starting " << NUM_THREADS << " threads" << std::endl;
 	for (int i = 0; i < NUM_THREADS; i++) {
 		threads[i] = std::thread(ExecuteThread, i);
 	}
@@ -131,14 +117,14 @@ void Stage3_Confirm() {
 		return;
 	}
 
-	if (fingerprintQualities.size() == fingerprintsUrls.size()) {
+	if (fingerprintQualities.size() == numberOfFingerprints) {
 		std::cout << "Success: Number of output fingerprints = number of input fingerprints = " << fingerprintQualities.size() << std::endl;
 		std::cout << "Please now delete the contents of the folder: " << downloadFolder << std::endl;
 	}
 	else {
 		std::cout << "Error: Number of output fingerprints != number of input fingerprints" << std::endl;
 		std::cout << "Number of output fingerprints = " << fingerprintQualities.size() << std::endl;
-		std::cout << "Number of input fingerprints = " << fingerprintsUrls.size() << std::endl;
+		std::cout << "Number of input fingerprints = " << numberOfFingerprints << std::endl;
 	}
 }
 
@@ -153,9 +139,13 @@ int main()
 		std::cout << "Error: couldnt read lines" << std::endl;
 		return 1;
 	}
+	numberOfFingerprints = fingerprintsUrls.size();
+	std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
+
+	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
 
 	//Stage 2: Run it through quality SDK via parallel processing
-	//Stage2_RunQuality();
+	Stage2_RunQuality();
 
 	//Stage 3: Wrap up: confirm number, delete images
 	Stage3_Confirm();
