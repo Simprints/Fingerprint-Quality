@@ -194,6 +194,26 @@ void ExecuteThread(int id) {
 }
 
 const unsigned int NUM_THREADS = 5;
+void Stage2_RunQuality() {
+	FileWrapper files;
+	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return;
+	}
+	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
+
+	std::thread threads[NUM_THREADS];
+	for (int i = 0; i < NUM_THREADS; i++) {
+		threads[i] = std::thread(ExecuteThread, i);
+	}
+
+	for (int i = 0; i < NUM_THREADS; i++) {
+		threads[i].join();
+	}
+}
+
+
 
 int main()
 {
@@ -209,49 +229,8 @@ int main()
 	//Stage1_CollectFingerprintImages();
 
 	//Stage 2: Run it through quality SDK via parallel processing
+	Stage2_RunQuality();
 
-	
-	//Init Urls Data store
-	FileWrapper files;
-	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
-	if (!result) {
-		std::cout << "Error: couldnt read lines" << std::endl;
-		return 1;
-	}
-	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
-	
-	std::thread threads[NUM_THREADS];
-	for (int i = 0; i < NUM_THREADS; i++) {
-		threads[i] = std::thread(ExecuteThread, i);
-	}
-
-	for (int i = 0; i < NUM_THREADS; i++) {
-		threads[i].join();
-	}
-
-
-	//Image image;
-	//NameUtilities name;
-	//SecugenWrapper secugen;
-
-
-	//for (std::string& url : fingerprintsUrls) 
-	//{
-	//	std::string wsqFilename;
-	//	assert(name.getFilenameFromUrl(url, &wsqFilename));
-	//	std::string wsqDestination = downloadFolder + "/" + wsqFilename;
-
-	//	std::string rawFilename;
-	//	image.DecodeWsqFile(wsqDestination, &rawFilename);
-	//	std::cout << "output: " << rawFilename << std::endl;
-	//	std::vector<unsigned char> downsizedImage;
-	//	image.Downsize(files.getBinary(rawFilename.c_str()), downsizedImage);
-
-	//	unsigned int quality = secugen.GetQuality(downsizedImage.data());
-
-	//	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
-	//}
 
 	return 0;
-
 }
