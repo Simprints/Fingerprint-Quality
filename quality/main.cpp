@@ -1,11 +1,7 @@
 #include <iostream>
 #include <assert.h>
-#include "SecugenWrapper.h"
 #include "FileWrapper.h"
 #include "GSUtilWrapper.h"
-#include "Image.h"
-#include "SystemWrapper.h"
-#include <fstream>
 #include <string>
 #include "NameUtilities.h"
 #include <thread>
@@ -33,8 +29,8 @@ void Stage1_CollectFingerprintImages() {
 	gsutil.DownloadAllWsq(downloadFolder);
 }
 
-void ExecuteThread(int id) {
-	ImageAndQualitiesProcessor proc(&fingerprintsUrls, numberOfFingerprints, count);
+void ExecuteThread() {
+	ImageAndQualitiesProcessor proc(fingerprintsUrls, numberOfFingerprints, count);
 	for (;;) {
 		std::string url = proc.FetchImageUrl();
 		if (url.empty()) {
@@ -47,12 +43,11 @@ void ExecuteThread(int id) {
 	}
 }
 
-
 void Stage2_RunQuality() {
 	std::thread threads[NUM_THREADS];
 	std::cout << "Starting " << NUM_THREADS << " threads" << std::endl;
 	for (int i = 0; i < NUM_THREADS; i++) {
-		threads[i] = std::thread(ExecuteThread, i);
+		threads[i] = std::thread(ExecuteThread);
 	}
 
 	for (int i = 0; i < NUM_THREADS; i++) {

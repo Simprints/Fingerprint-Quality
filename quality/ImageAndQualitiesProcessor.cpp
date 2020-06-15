@@ -8,12 +8,12 @@ std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	//static unsigned int count = 0;
 
 	std::string url;
-	if (_fingerprintsUrls->empty()) {
+	if (_fingerprintsUrls.empty()) {
 		url = "";
 	}
 	else {
-		url = _fingerprintsUrls->back();
-		_fingerprintsUrls->pop_back();
+		url = _fingerprintsUrls.back();
+		_fingerprintsUrls.pop_back();
 		std::string filename;
 		name.getFilenameFromUrl(url, &filename);
 
@@ -50,7 +50,7 @@ void ImageAndQualitiesProcessor::UploadResults(std::string url, unsigned int qua
 	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
 }
 
-ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>* fingerprintsUrls, unsigned int numberOfFingerprints, volatile unsigned int& count):
+ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints, volatile unsigned int& count):
 	_fingerprintsUrls(fingerprintsUrls), 
 	_numberOfFingerprints(numberOfFingerprints),
 	_count(count)

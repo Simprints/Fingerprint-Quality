@@ -146,6 +146,7 @@
     <ClCompile Include="FileWrapper.cpp" />
     <ClCompile Include="GSUtilWrapper.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImageAndQualitiesProcessor.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="NameUtilities.cpp" />
     <ClCompile Include="SecugenWrapper.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="FileWrapper.h" />
     <ClInclude Include="GSUtilWrapper.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageAndQualitiesProcessor.h" />
     <ClInclude Include="NameUtilities.h" />
     <ClInclude Include="SecugenWrapper.h" />
     <ClInclude Include="sgfplib.h" />

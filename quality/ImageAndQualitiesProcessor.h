@@ -14,14 +14,14 @@ private:
 	SecugenWrapper secugen; 
 	std::mutex ReadLock;
 	std::mutex WriteLock;
-	std::vector<std::string>* _fingerprintsUrls;
+	std::vector<std::string>& _fingerprintsUrls;
 	unsigned int _numberOfFingerprints;
 
 public:
 	std::string FetchImageUrl();
 	unsigned int ProcessImage(std::string url);
 	void UploadResults(std::string url, unsigned int quality);
-	ImageAndQualitiesProcessor(std::vector<std::string>* fingerprintsUrls, unsigned int numberOfFingerprints, volatile unsigned int& count);
+	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints, volatile unsigned int& count);
 
 protected:
 	volatile unsigned int& _count;
