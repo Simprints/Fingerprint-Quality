@@ -9,17 +9,15 @@
 #include <string>
 #include "NameUtilities.h"
 #include <thread>
-#include <mutex>
 #include "constants.h"
 #include <time.h>
-
+#include "Tests.h"
+#include "ImageAndQualitiesProcessor.h"
 
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
-std::mutex ReadLock;
-std::mutex WriteLock;
+volatile unsigned int count = 0;
 
-SecugenWrapper secugen; //TODO does this need to be initialised?
 
 void Stage1_CollectFingerprintImages() {
 	// Stage 1: get fingerprint urls into txt file
@@ -35,64 +33,17 @@ void Stage1_CollectFingerprintImages() {
 	gsutil.DownloadAllWsq(downloadFolder);
 }
 
-std::string FetchImageUrl(int id) {
-	std::lock_guard<std::mutex> lock(ReadLock);
-	static unsigned int count = 0;
-	NameUtilities name;	
-	std::string url;
-	if (fingerprintsUrls.empty()) {
-		url = "";
-	}
-	else {
-		url = fingerprintsUrls.back();
-		fingerprintsUrls.pop_back();
-		std::string filename;
-		name.getFilenameFromUrl(url, &filename);
-
-		count++;
-		std::cout << count << "/" << numberOfFingerprints << std::endl;
-	}
-	return url;
-}
-
-unsigned int ProcessImage(std::string url) {
-	NameUtilities name;
-	Image image;
-	FileWrapper files;
-	std::string wsqfilename;
-	name.getFilenameFromUrl(url, &wsqfilename);
-	std::string wsqdestination = downloadFolder + "/" + wsqfilename;
-
-	std::string rawfilename;
-	image.DecodeWsqFile(wsqdestination, &rawfilename);
-	std::vector<unsigned char> downsizedimage;
-	image.Downsize(files.getBinary(rawfilename.c_str()), downsizedimage);
-
-	unsigned int quality = secugen.GetQuality(downsizedimage.data());
-
-	return quality;
-}
-
-void UploadResults(std::string url, unsigned int quality) {
-	std::lock_guard<std::mutex> lock(WriteLock);
-	NameUtilities name;
-	std::string filename;
-	name.getFilenameFromUrl(url, &filename);
-	//std::cout << "Uploading: " << filename << " as " << quality << std::endl;
-	FileWrapper files;
-	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
-}
-
 void ExecuteThread(int id) {
+	ImageAndQualitiesProcessor proc(&fingerprintsUrls, numberOfFingerprints, count);
 	for (;;) {
-		std::string url = FetchImageUrl(id);
+		std::string url = proc.FetchImageUrl();
 		if (url.empty()) {
 			break;
 		}
 
-		unsigned int quality = ProcessImage(url);
+		unsigned int quality = proc.ProcessImage(url);
 
-		UploadResults(url, quality);
+		proc.UploadResults(url, quality);
 	}
 }
 
@@ -131,9 +82,10 @@ void Stage3_Confirm() {
 
 int main()
 {
+
 	int startTime = clock();
 	//Stage 1: Download all WSQ images
-	Stage1_CollectFingerprintImages();
+	//Stage1_CollectFingerprintImages();
 
 	FileWrapper files;
 	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);

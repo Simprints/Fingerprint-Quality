@@ -7,7 +7,7 @@ SecugenWrapper::SecugenWrapper() {
 	if (rc != SGFDX_ERROR_NONE) {
 		std::cout << "ERR: SGFPM_Create returns " << rc << std::endl;
 	}
-	std::cout << "Init" << std::endl;
+	//std::cout << "Init" << std::endl;
 }
 
 int SecugenWrapper::GetQuality(BYTE* fingerprintImage) {

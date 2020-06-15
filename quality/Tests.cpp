@@ -106,3 +106,7 @@ void Test_WriteCsv()
 	FileWrapper files;
 	files.writePairsFile("pairs.csv", imagesAndQualities);
 }
+
+void TestMain() {
+	Test_SecugenFingerprintQuality();
+}
