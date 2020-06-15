@@ -12,8 +12,6 @@
 
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
-volatile unsigned int count = 0;
-
 
 void Stage1_CollectFingerprintImages() {
 	// Stage 1: get fingerprint urls into txt file
@@ -77,7 +75,6 @@ void Stage3_Confirm() {
 
 int main()
 {
-
 	int startTime = clock();
 	//Stage 1: Download all WSQ images
 	//Stage1_CollectFingerprintImages();
