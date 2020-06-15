@@ -12,8 +12,8 @@ private:
 	Image image;
 	FileWrapper files;
 	SecugenWrapper secugen; 
-	std::mutex ReadLock;
-	std::mutex WriteLock;
+	static std::mutex ReadLock;
+	static std::mutex WriteLock;
 	std::vector<std::string>& _fingerprintsUrls;
 	unsigned int _numberOfFingerprints;
 

@@ -3,6 +3,9 @@
 #include "constants.h"
 #include <iostream>
 
+std::mutex ImageAndQualitiesProcessor::ReadLock;
+std::mutex ImageAndQualitiesProcessor::WriteLock;
+
 std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	std::lock_guard<std::mutex> lock(ReadLock);
 	//static unsigned int count = 0;
