@@ -218,26 +218,48 @@ void Stage2_RunQuality() {
 	}
 }
 
+void Stage3_Confirm() {
+	std::vector<std::string> fingerprintQualities;
+	FileWrapper files;
+	bool result = files.getLines(fingerprintQualitiesFilename, fingerprintQualities);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return;
+	}
 
+	if (fingerprintQualities.size() == fingerprintsUrls.size()) {
+		std::cout << "Success: Number of output fingerprints = number of input fingerprints = " << fingerprintQualities.size() << std::endl;
+		std::cout << "Please now delete the contents of the folder: images/" << std::endl;
+	}
+	else {
+		std::cout << "Error: Number of output fingerprints != number of input fingerprints" << std::endl;
+		std::cout << "Number of output fingerprints = " << fingerprintQualities.size() << std::endl;
+		std::cout << "Number of input fingerprints = " << fingerprintsUrls.size() << std::endl;
+	}
+}
 
 int main()
 {
 	//TODO
 	//add final check that number of files are same
-	//	have a counter
-	//	remove printf from download
 	//	delete fingerprints
-	//	download all files at once rather than one by one
-	//	approx 27s per kb
+
 
 	//Stage 1: Download all WSQ images
 	//Stage1_CollectFingerprintImages();
 
+	FileWrapper files;
+	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return 1;
+	}
+
 	//Stage 2: Run it through quality SDK via parallel processing
-	Stage2_RunQuality();
+	//Stage2_RunQuality();
 
-	//Stage 3: Wrap up: confirm number of 
-
+	//Stage 3: Wrap up: confirm number, delete images
+	Stage3_Confirm();
 
 	return 0;
 }
