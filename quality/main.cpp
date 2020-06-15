@@ -20,7 +20,7 @@ void Test_SecugenFingerprintQuality() {
 	assert(secugen.GetQuality(files.getBinary("qualityscore99.raw").data()) == 99);
 }
 
-void Stage1_CollectFingerprintLists() {
+void Stage1_CollectFingerprintImages() {
 	// Stage 1: get fingerprint urls into txt file
 	FileWrapper files;
 
@@ -30,13 +30,15 @@ void Stage1_CollectFingerprintLists() {
 
 	std::string urls = gsutil.ListFingerprintImages();
 	files.writeFile(fingerprintsUrlsFilename.c_str(), urls);
+
+	gsutil.DownloadAllWsq("images");
 }
 
 void Test_WsqImageQuality() {
 	FileWrapper files;
 	Image image;
 	std::string outfile;
-	image.DecodeWsqFile("images/1700dpi.wsq", &outfile);
+	image.DecodeWsqFile("test_images/1700dpi.wsq", &outfile);
 	std::cout << "output: " << outfile << std::endl;
 	std::vector<unsigned char> downsizedImage;
 	image.Downsize(files.getBinary(outfile.c_str()), downsizedImage);
@@ -135,8 +137,12 @@ int main()
 	//	download all files at once rather than one by one
 	//	approx 27s per kb
 
+	//Stage 1: Download all WSQ images
+	//Stage1_CollectFingerprintImages();
 
-	FileWrapper files;
+	//Stage 2: Run through quality SDK
+
+	/*FileWrapper files;
 	Image image;
 	GsutilWrapper gsutil;
 	SecugenWrapper secugen;
@@ -165,7 +171,7 @@ int main()
 		unsigned int quality = secugen.GetQuality(downsizedImage.data());
 
 		files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
-	}
+	}*/
 	return 0;
 
 }
