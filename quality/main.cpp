@@ -124,7 +124,7 @@ void Test_WriteCsv()
 }
 
 std::vector<std::string> fingerprintsUrls;
-
+unsigned int numberOfFingerprints;
 std::mutex ReadLock;
 std::mutex WriteLock;
 
@@ -132,6 +132,7 @@ SecugenWrapper secugen; //TODO does this need to be initialised?
 
 std::string FetchImageUrl(int id) {
 	std::lock_guard<std::mutex> lock(ReadLock);
+	static unsigned int count = 0;
 	NameUtilities name;	
 	std::string url;
 	if (fingerprintsUrls.empty()) {
@@ -142,7 +143,10 @@ std::string FetchImageUrl(int id) {
 		fingerprintsUrls.pop_back();
 		std::string filename;
 		name.getFilenameFromUrl(url, &filename);
-		std::cout << id << " is fetching " << filename << std::endl;
+		//std::cout << id << " is fetching " << filename << std::endl;
+
+		count++;
+		std::cout << count << "/" << numberOfFingerprints << std::endl;
 	}
 	return url;
 }
@@ -175,7 +179,7 @@ void UploadResults(std::string url, unsigned int quality) {
 	NameUtilities name;
 	std::string filename;
 	name.getFilenameFromUrl(url, &filename);
-	std::cout << "Uploading: " << filename << " as " << quality << std::endl;
+	//std::cout << "Uploading: " << filename << " as " << quality << std::endl;
 	FileWrapper files;
 	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
 }
@@ -201,6 +205,7 @@ void Stage2_RunQuality() {
 		std::cout << "Error: couldnt read lines" << std::endl;
 		return;
 	}
+	numberOfFingerprints = fingerprintsUrls.size();
 	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
 
 	std::thread threads[NUM_THREADS];
@@ -230,6 +235,8 @@ int main()
 
 	//Stage 2: Run it through quality SDK via parallel processing
 	Stage2_RunQuality();
+
+	//Stage 3: Wrap up: confirm number of 
 
 
 	return 0;
