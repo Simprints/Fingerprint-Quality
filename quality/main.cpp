@@ -11,6 +11,7 @@
 #include <thread>
 #include <mutex>
 #include "constants.h"
+#include <time.h>
 
 const unsigned int NUM_THREADS = 5;
 std::vector<std::string> fingerprintsUrls;
@@ -130,6 +131,7 @@ void Stage3_Confirm() {
 
 int main()
 {
+	int startTime = clock();
 	//Stage 1: Download all WSQ images
 	//Stage1_CollectFingerprintImages();
 
@@ -149,6 +151,9 @@ int main()
 
 	//Stage 3: Wrap up: confirm number, delete images
 	Stage3_Confirm();
+
+	int endTime = clock();
+	std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
 
 	return 0;
 }
