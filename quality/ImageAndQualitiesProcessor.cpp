@@ -6,6 +6,7 @@
 std::mutex ImageAndQualitiesProcessor::ReadLock;
 std::mutex ImageAndQualitiesProcessor::WriteLock;
 std::atomic<unsigned int> ImageAndQualitiesProcessor::counter(0);
+extern unsigned int numberOfFingerprints;
 
 std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	std::lock_guard<std::mutex> lock(ReadLock);
@@ -21,7 +22,7 @@ std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 		name.getFilenameFromUrl(url, &filename);
 
 		counter++;
-		std::cout << counter << "/" << _numberOfFingerprints << std::endl;
+		std::cout << counter << "/" << numberOfFingerprints << std::endl;
 	}
 	return url;
 }
@@ -53,8 +54,7 @@ void ImageAndQualitiesProcessor::UploadResults(std::string url, unsigned int qua
 	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
 }
 
-ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints):
-	_fingerprintsUrls(fingerprintsUrls), 
-	_numberOfFingerprints(numberOfFingerprints)
+ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls):
+	_fingerprintsUrls(fingerprintsUrls)
 {
 }

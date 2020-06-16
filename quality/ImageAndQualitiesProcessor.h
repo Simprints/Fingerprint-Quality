@@ -16,13 +16,12 @@ private:
 	static std::mutex ReadLock;
 	static std::mutex WriteLock;
 	std::vector<std::string>& _fingerprintsUrls;
-	unsigned int _numberOfFingerprints;
 	static std::atomic<unsigned int> counter;
 
 public:
 	std::string FetchImageUrl();
 	unsigned int ProcessImage(std::string url);
 	void UploadResults(std::string url, unsigned int quality);
-	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls, unsigned int numberOfFingerprints);
+	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls);
 };
 
