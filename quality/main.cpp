@@ -13,8 +13,13 @@
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
 
-void Stage1_CollectFingerprintImages() {
-	// Stage 1: get fingerprint urls into txt file
+
+
+void ListKenya2019Fingerprints() {
+
+}
+
+void DownloadAndListAfyaTekFingerprints() {
 	FileWrapper files;
 
 	GsutilWrapper gsutil;
@@ -53,13 +58,13 @@ void Stage2_RunQuality() {
 	}
 }
 
-void Stage3_Confirm() {
+bool Stage3_Confirm() {
 	std::vector<std::string> fingerprintQualities;
 	FileWrapper files;
 	bool result = files.getLines(fingerprintQualitiesFilename, fingerprintQualities);
 	if (!result) {
 		std::cout << "Error: couldnt read lines" << std::endl;
-		return;
+		return false;
 	}
 
 	if (fingerprintQualities.size() == numberOfFingerprints) {
@@ -70,32 +75,45 @@ void Stage3_Confirm() {
 		std::cout << "Error: Number of output fingerprints != number of input fingerprints" << std::endl;
 		std::cout << "Number of output fingerprints = " << fingerprintQualities.size() << std::endl;
 		std::cout << "Number of input fingerprints = " << numberOfFingerprints << std::endl;
+		return false;
 	}
+	return true;
 }
 
-int main()
-{
-	//TestMain();
-
-	int startTime = clock();
-	//Stage 1: Download all WSQ images
-	//Stage1_CollectFingerprintImages();
-
+bool LoadFingerprintUrls() {
 	FileWrapper files;
 	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
 	if (!result) {
 		std::cout << "Error: couldnt read lines" << std::endl;
-		return 1;
+		return false;
 	}
 	numberOfFingerprints = fingerprintsUrls.size();
 	std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
+	return true;
+}
 
+void InitFingerprintQualitiesCsv() {
+	FileWrapper files;
 	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
+}
 
-	//Stage 2: Run it through quality SDK via parallel processing
+bool Stage1_LoadFingerprintImages() {
+	DownloadAndListAfyaTekFingerprints();
+
+	return LoadFingerprintUrls();
+}
+
+int main()
+{
+	int startTime = clock();
+	InitFingerprintQualitiesCsv();
+
+	if (!Stage1_LoadFingerprintImages()) {
+		return 0;
+	}	
+
 	Stage2_RunQuality();
 
-	//Stage 3: Wrap up: confirm number, delete images
 	Stage3_Confirm();
 
 	int endTime = clock();
