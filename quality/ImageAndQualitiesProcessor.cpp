@@ -25,10 +25,14 @@ std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	return _url;
 }
 
-void ImageAndQualitiesProcessor::ProcessImage() {	
-
-	std::string filename = getFilename(_url);	
+std::string GetLocalPath(std::string url) {
+	std::string filename = getFilename(url);
 	std::string path = imagesFolder + "/" + filename;
+	return path;
+}
+
+void ImageAndQualitiesProcessor::ProcessImage() {	
+	std::string path = FromGsutil ? GetLocalPath(_url) : _url;
 	
 	Image image(path);
 	std::string decodedFilename = image.Decode();

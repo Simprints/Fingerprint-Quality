@@ -10,14 +10,17 @@
 #include "Tests.h"
 #include "ImageAndQualitiesProcessor.h"
 #include "DirectoryWrapper.h"
+#include <algorithm>
+#include <execution>
 
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
 
-
-
 void ListKenya2019Fingerprints() {
+	std::string paths = ListFingerprintImages(imagesFolder);
 
+	FileWrapper files;
+	files.writeFile(fingerprintsUrlsFilename.c_str(), paths);
 }
 
 void DownloadAndListAfyaTekFingerprints() {
@@ -70,7 +73,7 @@ bool Stage3_Confirm() {
 
 	if (fingerprintQualities.size() == numberOfFingerprints) {
 		std::cout << "Success: Number of output fingerprints = number of input fingerprints = " << fingerprintQualities.size() << std::endl;
-		std::cout << "Please now delete the contents of the folder: " << imagesFolder << std::endl;
+		std::cout << "Please now delete the fingerprint images." << std::endl;
 	}
 	else {
 		std::cout << "Error: Number of output fingerprints != number of input fingerprints" << std::endl;
@@ -99,28 +102,29 @@ void InitFingerprintQualitiesCsv() {
 }
 
 bool Stage1_LoadFingerprintImages() {
-	DownloadAndListAfyaTekFingerprints();
-
+	//DownloadAndListAfyaTekFingerprints();
+	//ListKenya2019Fingerprints();
 	return LoadFingerprintUrls();
 }
 
+void Init() {
+	InitFingerprintQualitiesCsv();
+}
 int main()
 {
-	DirectoryWrapper dir;
-	std::cout << dir.ListFingerprintImages("Kenya2019");
-	//int startTime = clock();
-	//InitFingerprintQualitiesCsv();
+	int startTime = clock();
+	Init();
 
-	//if (!Stage1_LoadFingerprintImages()) {
-	//	return 0;
-	//}	
+	if (!Stage1_LoadFingerprintImages()) {
+		return 0;
+	}	
 
-	//Stage2_RunQuality();
+	Stage2_RunQuality();
 
-	//Stage3_Confirm();
+	Stage3_Confirm();
 
-	//int endTime = clock();
-	//std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
+	int endTime = clock();
+	std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
 
 	return 0;
 }
