@@ -102,8 +102,9 @@ void InitFingerprintQualitiesCsv() {
 }
 
 bool Stage1_LoadFingerprintImages() {
-	//DownloadAndListAfyaTekFingerprints();
-	//ListKenya2019Fingerprints();
+	//Choose which function to call below. Remember to set 'const bool FromGsutil' depending on whether the images came from google cloud store.
+	//DownloadAndListAfyaTekFingerprints();	
+	ListKenya2019Fingerprints();
 	return LoadFingerprintUrls();
 }
 
