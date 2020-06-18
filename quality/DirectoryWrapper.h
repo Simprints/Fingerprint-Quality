@@ -1,8 +1,12 @@
 #pragma once
 #include <string>
+#include "SystemWrapper.h"
 class DirectoryWrapper
 {
-	std::string ListFingerprintImages();
-
+public:
+	std::string ListFingerprintImages(std::string base_folder);
+private:
+	SystemWrapper _system;
+	
 };
 

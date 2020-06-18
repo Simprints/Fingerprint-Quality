@@ -9,6 +9,7 @@
 #include <time.h>
 #include "Tests.h"
 #include "ImageAndQualitiesProcessor.h"
+#include "DirectoryWrapper.h"
 
 std::vector<std::string> fingerprintsUrls;
 unsigned int numberOfFingerprints;
@@ -105,19 +106,21 @@ bool Stage1_LoadFingerprintImages() {
 
 int main()
 {
-	int startTime = clock();
-	InitFingerprintQualitiesCsv();
+	DirectoryWrapper dir;
+	std::cout << dir.ListFingerprintImages("Kenya2019");
+	//int startTime = clock();
+	//InitFingerprintQualitiesCsv();
 
-	if (!Stage1_LoadFingerprintImages()) {
-		return 0;
-	}	
+	//if (!Stage1_LoadFingerprintImages()) {
+	//	return 0;
+	//}	
 
-	Stage2_RunQuality();
+	//Stage2_RunQuality();
 
-	Stage3_Confirm();
+	//Stage3_Confirm();
 
-	int endTime = clock();
-	std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
+	//int endTime = clock();
+	//std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
 
 	return 0;
 }
