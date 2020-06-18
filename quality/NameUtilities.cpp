@@ -1,9 +1,11 @@
 #include "NameUtilities.h"
 
-bool NameUtilities::getFilenameFromUrl(std::string url, std::string* filename) {
-	std::size_t found = url.find_last_of("/\\");
-	*filename = url.substr(found + 1);
+std::string getFilename(std::string path) {
+	std::size_t found = path.find_last_of("/\\");
+	return path.substr(found + 1);
+}
 
-	return (filename->find(".wsq") != std::string::npos)
-		|| (filename->find(".raw") != std::string::npos);
+std::string getFileType(std::string path) {
+	std::size_t found = path.find_last_of(".");
+	return path.substr(found + 1);
 }

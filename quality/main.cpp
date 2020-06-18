@@ -35,9 +35,9 @@ void ExecuteThread() {
 			break;
 		}
 
-		unsigned int quality = proc.ProcessImage();
+		proc.ProcessImage();
 
-		proc.UploadResults(quality);
+		proc.UploadResults();
 	}
 }
 

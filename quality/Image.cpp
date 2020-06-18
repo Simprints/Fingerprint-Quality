@@ -2,6 +2,7 @@
 #include "SystemWrapper.h"
 #include <iostream>
 #include <cmath>
+#include "NameUtilities.h"
 
 #define cimg_display 0
 #include "lib/CImg/CImg.h"
@@ -10,7 +11,7 @@ using namespace cimg_library;
 const std::string DWSQ("C:\\dev\\Fingerprint-Quality\\quality\\lib\\wsq\\dwsq.exe");
 
 std::string Image::Decode() {
-	std::string filetype = GetFileType();
+	std::string filetype = getFileType(_path);
 
 	if (filetype == "wsq") {
 		DecodeWsqFile(_path, &_decodedFilePath);
@@ -56,16 +57,6 @@ void Image::Downsize(const std::vector<unsigned char> input, std::vector<unsigne
     CImg<uint8_t> downsizedImage = image.get_resize(300, 400);
 	output.insert(output.begin(), downsizedImage.data(), downsizedImage.data() + downsizedImage.size());
 
-}
-
-std::string Image::getFilename() {
-	std::size_t found = _path.find_last_of("/\\");
-	return _path.substr(found + 1);
-}
-
-std::string Image::GetFileType() {
-	std::size_t found = _path.find_last_of(".");
-	return _path.substr(found + 1);
 }
 
 Image::Image(std::string path): _path(path)

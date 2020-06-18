@@ -11,25 +11,23 @@ extern unsigned int numberOfFingerprints;
 std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	std::lock_guard<std::mutex> lock(ReadLock);
 
-	std::string url;
 	if (_fingerprintsUrls.empty()) {
-		url = "";
+		_url = "";
 	}
 	else {
-		url = _fingerprintsUrls.back();
+		_url = _fingerprintsUrls.back();
 		_fingerprintsUrls.pop_back();
 
 		counter++;
 		std::cout << counter << "/" << numberOfFingerprints << std::endl;
 	}
-	_url = url;
-	return url;
+
+	return _url;
 }
 
-unsigned int ImageAndQualitiesProcessor::ProcessImage() {	
+void ImageAndQualitiesProcessor::ProcessImage() {	
 
-	std::string filename;
-	name.getFilenameFromUrl(_url, &filename);
+	std::string filename = getFilename(_url);	
 	std::string path = imagesFolder + "/" + filename;
 	
 	Image image(path);
@@ -37,22 +35,17 @@ unsigned int ImageAndQualitiesProcessor::ProcessImage() {
 	std::vector<unsigned char> downsizedImage;
 	image.Downsize(files.getBinary(decodedFilename.c_str()), downsizedImage);
 
-	unsigned int quality = secugen.GetQuality(downsizedImage.data());
-
-	return quality;
+	_quality = secugen.GetQuality(downsizedImage.data());
 }
 
-void ImageAndQualitiesProcessor::UploadResults(unsigned int quality) {
+void ImageAndQualitiesProcessor::UploadResults() {
 	std::lock_guard<std::mutex> lock(WriteLock);
-
-	std::string filename;
-	name.getFilenameFromUrl(_url, &filename);
-	//std::cout << "Uploading: " << filename << " as " << quality << std::endl;
+	
 	FileWrapper files;
-	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(_url, quality));
+	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(_url, _quality));
 }
 
 ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls):
-	_fingerprintsUrls(fingerprintsUrls)
+	_fingerprintsUrls(fingerprintsUrls), _quality(0), _url("")
 {
 }

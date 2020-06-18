@@ -1,8 +1,7 @@
 #pragma once
 #include <string>
-class NameUtilities
-{
-public:
-	bool getFilenameFromUrl(std::string url, std::string* filename);
-};
+
+std::string getFilename(std::string path);
+
+std::string getFileType(std::string path);
 
