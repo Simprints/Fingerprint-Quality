@@ -57,7 +57,7 @@ void Test_Download()
 	std::string filename;
 	NameUtilities name;
 	name.getFilenameFromUrl(url, &filename);
-	std::string destination = downloadFolder + "/" + filename;
+	std::string destination = imagesFolder + "/" + filename;
 
 	gsutil.Download(url, destination);
 }
@@ -81,7 +81,7 @@ int Test_DownloadAndGetQuality() {
 		std::string url(line);
 		std::string filename;
 		name.getFilenameFromUrl(url, &filename);
-		std::string destination = downloadFolder + "/" + filename;
+		std::string destination = imagesFolder + "/" + filename;
 		gsutil.Download(url, destination);
 
 
@@ -107,6 +107,36 @@ void Test_WriteCsv()
 	files.writePairsFile("pairs.csv", imagesAndQualities);
 }
 
+void Test_Name()
+{
+	NameUtilities name;
+
+	std::string url("gs://simprints-152315-images-eu/projects/fUBnpzDdbsCsMp0egCHB/sessions/004e8db6-b294-487b-8334-6c8def57e54c/fingerprints/22804a1d-0da0-4604-92b6-1042c455b8d2.wsq");
+	std::string filename;	
+	assert(name.getFilenameFromUrl(url, &filename));
+	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.wsq");
+	std::cout << filename << std::endl;
+
+	filename.clear();
+	url = "22804a1d-0da0-4604-92b6-1042c455b8d2.wsq";
+	assert(name.getFilenameFromUrl(url, &filename));
+	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.wsq");
+	std::cout << filename << std::endl;
+
+	filename.clear();
+	url = "22804a1d-0da0-4604-92b6-1042c455b8d2.raw";
+	assert(!name.getFilenameFromUrl(url, &filename));
+	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.raw");
+	std::cout << filename << std::endl;
+
+	filename.clear();
+	url = "fingerprints/22804a1d-0da0-4604-92b6-1042c455b8d2.raw";
+	assert(!name.getFilenameFromUrl(url, &filename));
+	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.raw");
+	std::cout << filename << std::endl;
+
+}
+
 void TestMain() {
-	Test_SecugenFingerprintQuality();
+	Test_Name();
 }

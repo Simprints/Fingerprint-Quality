@@ -32,7 +32,7 @@ unsigned int ImageAndQualitiesProcessor::ProcessImage(std::string url) {
 
 	std::string wsqfilename;
 	name.getFilenameFromUrl(url, &wsqfilename);
-	std::string wsqdestination = downloadFolder + "/" + wsqfilename;
+	std::string wsqdestination = imagesFolder + "/" + wsqfilename;
 
 	std::string rawfilename;
 	image.DecodeWsqFile(wsqdestination, &rawfilename);

@@ -24,7 +24,7 @@ void Stage1_CollectFingerprintImages() {
 	std::string urls = gsutil.ListFingerprintImages();
 	files.writeFile(fingerprintsUrlsFilename.c_str(), urls);
 
-	gsutil.DownloadAllWsq(downloadFolder);
+	gsutil.DownloadAllWsq(imagesFolder);
 }
 
 void ExecuteThread() {
@@ -64,7 +64,7 @@ void Stage3_Confirm() {
 
 	if (fingerprintQualities.size() == numberOfFingerprints) {
 		std::cout << "Success: Number of output fingerprints = number of input fingerprints = " << fingerprintQualities.size() << std::endl;
-		std::cout << "Please now delete the contents of the folder: " << downloadFolder << std::endl;
+		std::cout << "Please now delete the contents of the folder: " << imagesFolder << std::endl;
 	}
 	else {
 		std::cout << "Error: Number of output fingerprints != number of input fingerprints" << std::endl;
@@ -75,29 +75,31 @@ void Stage3_Confirm() {
 
 int main()
 {
-	int startTime = clock();
-	//Stage 1: Download all WSQ images
-	Stage1_CollectFingerprintImages();
+	TestMain();
 
-	FileWrapper files;
-	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
-	if (!result) {
-		std::cout << "Error: couldnt read lines" << std::endl;
-		return 1;
-	}
-	numberOfFingerprints = fingerprintsUrls.size();
-	std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
+	//int startTime = clock();
+	////Stage 1: Download all WSQ images
+	//Stage1_CollectFingerprintImages();
 
-	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
+	//FileWrapper files;
+	//bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
+	//if (!result) {
+	//	std::cout << "Error: couldnt read lines" << std::endl;
+	//	return 1;
+	//}
+	//numberOfFingerprints = fingerprintsUrls.size();
+	//std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
 
-	//Stage 2: Run it through quality SDK via parallel processing
-	Stage2_RunQuality();
+	//files.writeFile(fingerprintQualitiesFilename.c_str(), "");
 
-	//Stage 3: Wrap up: confirm number, delete images
-	Stage3_Confirm();
+	////Stage 2: Run it through quality SDK via parallel processing
+	//Stage2_RunQuality();
 
-	int endTime = clock();
-	std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
+	////Stage 3: Wrap up: confirm number, delete images
+	//Stage3_Confirm();
+
+	//int endTime = clock();
+	//std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
 
 	return 0;
 }

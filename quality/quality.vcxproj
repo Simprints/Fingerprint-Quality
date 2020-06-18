@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DirectoryWrapper.cpp" />
     <ClCompile Include="FileWrapper.cpp" />
     <ClCompile Include="GSUtilWrapper.cpp" />
     <ClCompile Include="Image.cpp" />
@@ -155,6 +156,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
+    <ClInclude Include="DirectoryWrapper.h" />
     <ClInclude Include="FileWrapper.h" />
     <ClInclude Include="GSUtilWrapper.h" />
     <ClInclude Include="Image.h" />
