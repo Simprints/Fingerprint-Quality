@@ -18,40 +18,38 @@ std::string ImageAndQualitiesProcessor::FetchImageUrl() {
 	else {
 		url = _fingerprintsUrls.back();
 		_fingerprintsUrls.pop_back();
-		std::string filename;
-		name.getFilenameFromUrl(url, &filename);
 
 		counter++;
 		std::cout << counter << "/" << numberOfFingerprints << std::endl;
 	}
+	_url = url;
 	return url;
 }
 
-unsigned int ImageAndQualitiesProcessor::ProcessImage(std::string url) {
+unsigned int ImageAndQualitiesProcessor::ProcessImage() {	
 
+	std::string filename;
+	name.getFilenameFromUrl(_url, &filename);
+	std::string path = imagesFolder + "/" + filename;
+	
+	Image image(path);
+	std::string decodedFilename = image.Decode();
+	std::vector<unsigned char> downsizedImage;
+	image.Downsize(files.getBinary(decodedFilename.c_str()), downsizedImage);
 
-	std::string wsqfilename;
-	name.getFilenameFromUrl(url, &wsqfilename);
-	std::string wsqdestination = imagesFolder + "/" + wsqfilename;
-
-	std::string rawfilename;
-	image.DecodeWsqFile(wsqdestination, &rawfilename);
-	std::vector<unsigned char> downsizedimage;
-	image.Downsize(files.getBinary(rawfilename.c_str()), downsizedimage);
-
-	unsigned int quality = secugen.GetQuality(downsizedimage.data());
+	unsigned int quality = secugen.GetQuality(downsizedImage.data());
 
 	return quality;
 }
 
-void ImageAndQualitiesProcessor::UploadResults(std::string url, unsigned int quality) {
+void ImageAndQualitiesProcessor::UploadResults(unsigned int quality) {
 	std::lock_guard<std::mutex> lock(WriteLock);
 
 	std::string filename;
-	name.getFilenameFromUrl(url, &filename);
+	name.getFilenameFromUrl(_url, &filename);
 	//std::cout << "Uploading: " << filename << " as " << quality << std::endl;
 	FileWrapper files;
-	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(url, quality));
+	files.appendToFile(fingerprintQualitiesFilename.c_str(), std::make_pair(_url, quality));
 }
 
 ImageAndQualitiesProcessor::ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls):

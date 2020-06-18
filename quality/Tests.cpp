@@ -23,9 +23,9 @@ void Test_SecugenFingerprintQuality() {
 
 void Test_WsqImageQuality() {
 	FileWrapper files;
-	Image image;
+	Image image("test_images/1700dpi.wsq");
 	std::string outfile;
-	image.DecodeWsqFile("test_images/1700dpi.wsq", &outfile);
+	outfile = image.Decode();
 	std::cout << "output: " << outfile << std::endl;
 	std::vector<unsigned char> downsizedImage;
 	image.Downsize(files.getBinary(outfile.c_str()), downsizedImage);
@@ -64,7 +64,7 @@ void Test_Download()
 
 int Test_DownloadAndGetQuality() {
 	FileWrapper files;
-	Image image;
+	
 	GsutilWrapper gsutil;
 	SecugenWrapper secugen;
 	NameUtilities name;
@@ -86,7 +86,8 @@ int Test_DownloadAndGetQuality() {
 
 
 		std::string outfile;
-		image.DecodeWsqFile(destination, &outfile);
+		Image image(destination);
+		outfile = image.Decode();
 		std::cout << "output: " << outfile << std::endl;
 		std::vector<unsigned char> downsizedImage;
 		image.Downsize(files.getBinary(outfile.c_str()), downsizedImage);
@@ -125,13 +126,13 @@ void Test_Name()
 
 	filename.clear();
 	url = "22804a1d-0da0-4604-92b6-1042c455b8d2.raw";
-	assert(!name.getFilenameFromUrl(url, &filename));
+	assert(name.getFilenameFromUrl(url, &filename));
 	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.raw");
 	std::cout << filename << std::endl;
 
 	filename.clear();
 	url = "fingerprints/22804a1d-0da0-4604-92b6-1042c455b8d2.raw";
-	assert(!name.getFilenameFromUrl(url, &filename));
+	assert(name.getFilenameFromUrl(url, &filename));
 	assert(filename == "22804a1d-0da0-4604-92b6-1042c455b8d2.raw");
 	std::cout << filename << std::endl;
 

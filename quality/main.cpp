@@ -35,9 +35,9 @@ void ExecuteThread() {
 			break;
 		}
 
-		unsigned int quality = proc.ProcessImage(url);
+		unsigned int quality = proc.ProcessImage();
 
-		proc.UploadResults(url, quality);
+		proc.UploadResults(quality);
 	}
 }
 
@@ -75,31 +75,31 @@ void Stage3_Confirm() {
 
 int main()
 {
-	TestMain();
+	//TestMain();
 
-	//int startTime = clock();
-	////Stage 1: Download all WSQ images
+	int startTime = clock();
+	//Stage 1: Download all WSQ images
 	//Stage1_CollectFingerprintImages();
 
-	//FileWrapper files;
-	//bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
-	//if (!result) {
-	//	std::cout << "Error: couldnt read lines" << std::endl;
-	//	return 1;
-	//}
-	//numberOfFingerprints = fingerprintsUrls.size();
-	//std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
+	FileWrapper files;
+	bool result = files.getLines(fingerprintsUrlsFilename, fingerprintsUrls);
+	if (!result) {
+		std::cout << "Error: couldnt read lines" << std::endl;
+		return 1;
+	}
+	numberOfFingerprints = fingerprintsUrls.size();
+	std::cout << "Found " << numberOfFingerprints << " fingerprints" << std::endl;
 
-	//files.writeFile(fingerprintQualitiesFilename.c_str(), "");
+	files.writeFile(fingerprintQualitiesFilename.c_str(), "");
 
-	////Stage 2: Run it through quality SDK via parallel processing
-	//Stage2_RunQuality();
+	//Stage 2: Run it through quality SDK via parallel processing
+	Stage2_RunQuality();
 
-	////Stage 3: Wrap up: confirm number, delete images
-	//Stage3_Confirm();
+	//Stage 3: Wrap up: confirm number, delete images
+	Stage3_Confirm();
 
-	//int endTime = clock();
-	//std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
+	int endTime = clock();
+	std::cout << "Elapsed time: " << (endTime - startTime) / double(CLOCKS_PER_SEC) << std::endl;
 
 	return 0;
 }

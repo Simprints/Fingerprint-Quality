@@ -10,18 +10,19 @@ class ImageAndQualitiesProcessor
 {
 private:
 	NameUtilities name;
-	Image image;
+	//Image image;
 	FileWrapper files;
 	SecugenWrapper secugen; 
 	static std::mutex ReadLock;
 	static std::mutex WriteLock;
 	std::vector<std::string>& _fingerprintsUrls;
 	static std::atomic<unsigned int> counter;
+	std::string _url;
 
 public:
 	std::string FetchImageUrl();
-	unsigned int ProcessImage(std::string url);
-	void UploadResults(std::string url, unsigned int quality);
+	unsigned int ProcessImage();
+	void UploadResults(unsigned int quality);
 	ImageAndQualitiesProcessor(std::vector<std::string>& fingerprintsUrls);
 };
 
